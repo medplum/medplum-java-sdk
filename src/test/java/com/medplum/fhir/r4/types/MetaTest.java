@@ -83,14 +83,8 @@ public class MetaTest {
     }
 
     @Test
-    public void testWho() {
+    public void testAuthor() {
         final Reference value = Reference.create().build();
-        assertEquals(value, Meta.create().who(value).build().who());
-    }
-
-    @Test
-    public void testOnBehalfOf() {
-        final Reference value = Reference.create().build();
-        assertEquals(value, Meta.create().onBehalfOf(value).build().onBehalfOf());
+        assertEquals(value, Meta.create().author(value).build().author());
     }
 }

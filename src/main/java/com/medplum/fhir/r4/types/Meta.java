@@ -113,15 +113,8 @@ public class Meta extends FhirObject {
     /**
      * The individual, device or organization who initiated the last change.
      */
-    public Reference who() {
+    public Reference author() {
         return getObject(Reference.class, FhirPropertyNames.PROPERTY_WHO);
-    }
-
-    /**
-     * The individual, device, or organization for whom the change was made.
-     */
-    public Reference onBehalfOf() {
-        return getObject(Reference.class, FhirPropertyNames.PROPERTY_ON_BEHALF_OF);
     }
 
     public static final class Builder extends FhirObject.Builder<Meta, Meta.Builder> {
@@ -179,13 +172,8 @@ public class Meta extends FhirObject {
             return this;
         }
 
-        public Builder who(final Reference who) {
-            b.add(FhirPropertyNames.PROPERTY_WHO, who);
-            return this;
-        }
-
-        public Builder onBehalfOf(final Reference onBehalfOf) {
-            b.add(FhirPropertyNames.PROPERTY_ON_BEHALF_OF, onBehalfOf);
+        public Builder author(final Reference author) {
+            b.add(FhirPropertyNames.PROPERTY_WHO, author);
             return this;
         }
 
