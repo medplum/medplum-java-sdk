@@ -3,6 +3,8 @@ package com.medplum.fhir.r4;
 import static com.medplum.fhir.r4.FhirMediaType.*;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
 
 import jakarta.json.JsonObject;
@@ -41,6 +43,7 @@ public class FhirClient {
     private final String clientSecret;
     private String accessToken;
     private String refreshToken;
+    private Instant expires;
 
     public static Builder builder() {
         return new Builder();
@@ -144,9 +147,7 @@ public class FhirClient {
     }
 
     private Response method(final URI uri, final String method, final Entity<?> entity) {
-        if (accessToken == null) {
-            getAccessToken();
-        }
+        updateAccessToken();
 
         final var builder = client.target(uri).request().accept(APPLICATION_FHIR_JSON);
         if (accessToken != null) {
@@ -156,7 +157,14 @@ public class FhirClient {
         return builder.method(method, entity);
     }
 
-    private void getAccessToken() {
+    private void updateAccessToken() {
+        if (accessToken != null && expires != null) {
+            final var remaining = Duration.between(Instant.now(), expires);
+            if (remaining.toMinutes() > 5) {
+                return;
+            }
+        }
+
         if (tokenUrl != null && clientId != null && clientSecret != null) {
             getAccessTokenWithClientCredentials();
         } else if (tokenUrl != null && refreshToken != null) {
@@ -184,7 +192,9 @@ public class FhirClient {
             throw new IllegalStateException("Error with client credentials: " + body + " (" + response.getStatus() + ")");
         }
 
-        this.accessToken = JsonUtils.readJsonString(body).getString(KEY_ACCESS_TOKEN);
+        final var json = JsonUtils.readJsonString(body);
+        this.accessToken = json.getString(KEY_ACCESS_TOKEN);
+        this.expires = Instant.now().plusSeconds(json.getInt("expires_in"));
     }
 
     private void getAccessTokenWithRefreshToken() {
