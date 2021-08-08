@@ -114,7 +114,7 @@ public class Meta extends FhirObject {
      * The individual, device or organization who initiated the last change.
      */
     public Reference author() {
-        return getObject(Reference.class, FhirPropertyNames.PROPERTY_WHO);
+        return getObject(Reference.class, FhirPropertyNames.PROPERTY_AUTHOR);
     }
 
     public static final class Builder extends FhirObject.Builder<Meta, Meta.Builder> {
@@ -173,7 +173,7 @@ public class Meta extends FhirObject {
         }
 
         public Builder author(final Reference author) {
-            b.add(FhirPropertyNames.PROPERTY_WHO, author);
+            b.add(FhirPropertyNames.PROPERTY_AUTHOR, author);
             return this;
         }
 
